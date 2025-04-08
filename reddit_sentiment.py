@@ -1,8 +1,11 @@
 import praw
 from transformers import pipeline
 import time
+    
 
 def get_reddit_sentiment(keyword, subreddits, num_posts=10, time_filter='day', verbose=True, sleep_time=1):
+    
+    
     pipe = pipeline("text-classification", model="ProsusAI/finbert")
 
     # Initialize Reddit API (replace with your credentials)

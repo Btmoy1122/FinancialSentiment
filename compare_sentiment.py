@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from reddit_sentiment import get_reddit_sentiment
 from yahoo_sentiment import get_yahoo_sentiment
 import argparse
+import streamlit as st  # Add this import at the top
 
 def compare_sentiment(tickers, subreddits_map, keyword_map):
     reddit_scores = []
@@ -11,7 +12,7 @@ def compare_sentiment(tickers, subreddits_map, keyword_map):
         keyword = keyword_map.get(ticker, ticker)
         subreddits = subreddits_map.get(ticker, [ticker])
 
-        print(f"\n===== {ticker} =====")
+        st.write(f"\n===== {ticker} =====")  # Use st.write instead of print
         yahoo_score = get_yahoo_sentiment(ticker, keyword)
         reddit_score = get_reddit_sentiment(keyword, subreddits)
 
@@ -21,10 +22,11 @@ def compare_sentiment(tickers, subreddits_map, keyword_map):
     plot_sentiment_comparison(tickers, reddit_scores, yahoo_scores)
 
 def plot_sentiment_comparison(tickers, reddit_scores, yahoo_scores):
-    x = range(len(tickers))
-    bar_width = 0.35
-
+    plt.switch_backend('Agg')  # Set the backend to Agg before creating any figures
     fig, ax = plt.subplots()
+    bar_width = 0.35
+    x = range(len(tickers))
+
     bars1 = ax.bar([i - bar_width/2 for i in x], reddit_scores, width=bar_width, label='Reddit')
     bars2 = ax.bar([i + bar_width/2 for i in x], yahoo_scores, width=bar_width, label='Yahoo')
 
@@ -44,14 +46,13 @@ def plot_sentiment_comparison(tickers, reddit_scores, yahoo_scores):
                     ha='center', va='bottom')
 
     plt.tight_layout()
-    plt.show()
+    st.pyplot(fig)  # Use st.pyplot to display the figure
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Compare Reddit and Yahoo sentiment for given tickers.')
     parser.add_argument('--tickers', nargs='+', required=True, help='List of stock tickers to analyze')
     args = parser.parse_args()
 
-    # You can customize subreddit and keyword mapping here
     default_subreddits = {
         'META': ['technology', 'stocks'],
         'AAPL': ['apple', 'stocks'],

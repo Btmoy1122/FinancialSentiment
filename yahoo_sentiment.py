@@ -1,7 +1,11 @@
 import feedparser
 from transformers import pipeline
+    
 
 def get_yahoo_sentiment(ticker, keyword, verbose=True):
+    
+    
+    
     pipe = pipeline("text-classification", model="ProsusAI/finbert")
     rss_url = f'https://finance.yahoo.com/rss/headline?s={ticker}'
     feed = feedparser.parse(rss_url)
